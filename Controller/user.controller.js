@@ -39,7 +39,7 @@ try{
     if(finduser){
         bcrypt.compare(password, finduser.password,(err,result)=>{
             if(result){
-                const token=jwt.sign({author:finduser.role},"masai");
+                const token=jwt.sign({author:finduser.role,authorId:finduser._id},"masai");
                res.status(200).send({"msg":"Login Successfully","token":token,"Logged in as ":finduser.role})
             }else{
                 res.status(200).send({"msg":"Wrong Credential"}) 
@@ -55,7 +55,7 @@ try{
 
 
 
-userrouter.get("/",authc,async(req,res)=>{
+userrouter.get("/",auth,async(req,res)=>{
     try{
 const users=await UserModel.find({role:"MEMBER"})
 res.status(200).send({"msg":users})
@@ -114,11 +114,11 @@ userrouter.patch("/update/:userId",auth,async(req,res)=>{
    
     try{
 
-if(user.role=="LIBRARIAN"){
+if(user.role=="MEMBER"){
     await UserModel.findByIdAndUpdate({_id:userId},req.body)
     res.status(200).send({"msg":"User Updated Successfully"})
 }else{
-    res.status(200).send({"msg":"Cannot be Updated"})
+    res.status(200).send({"msg":"Cannot be Updated You are Not Authorised Person To Update"})
 }
 
     }catch(er){
@@ -130,13 +130,13 @@ if(user.role=="LIBRARIAN"){
 
 
 
-userrouter.delete("/selfdelete/:postId",auth,async(req,res)=>{
+userrouter.delete("/selfdelete/:postId",authc,async(req,res)=>{
     const {postId}=req.params
     const posts=await UserModel.findOne({_id:postId})
     try{
-        if(req.body._id===posts._id){
+        if(req.body.authorId==posts._id){
             await UserModel.findByIdAndDelete({_id:postId})
-            res.status(200).send({"msg":"Data Deleted Successfully"})
+            res.status(200).send({"msg":"Your Account is Successfully Deleted"})
         }else{
             res.status(200).send({"msg":"You cannot Delete Other"})  
         }

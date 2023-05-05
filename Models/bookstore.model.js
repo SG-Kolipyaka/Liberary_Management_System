@@ -5,7 +5,7 @@ const BooksSchema=mongoose.Schema({
     name : {type:String,require:true},
     author : {type:String,require:true},
     category:{type:String,require:true},
-    status : {type:Boolean,require:true},
+    status : {type:String,enum:["AVAILABLE","BORROWED"],require:true},
 
 
 },{

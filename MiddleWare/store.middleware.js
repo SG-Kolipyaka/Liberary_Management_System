@@ -10,12 +10,12 @@ const auth=(req,res,next)=>{
                    
                     next()
                 }else{
-                    res.status(200).send({"msg":"You are Not authorised User To add The Books"}) 
+                    res.status(200).send({"msg":"You are Not authorised User"}) 
                 }
 
                 
             }else{
-                res.status(200).send({"msg":"You are Not authorised User To add The Books"}) 
+                res.status(200).send({"msg":"You are Not authorised User"}) 
             }
         }catch(er){
             res.status(200).send({"msg":er.message}) 

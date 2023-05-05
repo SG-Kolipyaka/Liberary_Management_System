@@ -2,7 +2,7 @@ const {BooksModel}=require("../Models/bookstore.model")
 // const jwt=require("jsonwebtoken")
 // const bcrypt=require("bcrypt")
 const {auth}=require("../MiddleWare/store.middleware")
-// const {authc}=require("../MiddleWare/store.middle")
+const {authc}=require("../MiddleWare/store.middle")
 const {Router}=require("express")
 const { UserModel } = require("../Models/user.model")
 
@@ -19,7 +19,7 @@ bookrouter.post("/add",auth,async(req,res)=>{
     }
 })
 
-bookrouter.get("/",auth,async(req,res)=>{
+bookrouter.get("/",authc,async(req,res)=>{
     const {query}=req.query
     try{
         const books=await BooksModel.find(query)
@@ -43,6 +43,19 @@ bookrouter.patch("/update/:postId",auth,async(req,res)=>{
         res.status(400).send({"msg":er.message})
     }
 })
+
+
+
+bookrouter.patch("/updatestatus/:postId",authc,async(req,res)=>{
+    const {postId}=req.params
+    try{
+        await BooksModel.findByIdAndUpdate({_id:postId},req.body.status)
+        res.status(200).send({"msg":`book is ${req.body.status}`})
+    }catch(err){
+        res.status(400).send({"msg":er.message})
+    }
+})
+
 
 
 bookrouter.delete("/delete/:postId",auth,async(req,res)=>{
